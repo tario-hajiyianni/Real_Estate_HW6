@@ -1,0 +1,5 @@
+# Ignore pdf, CSV, XLS, XLSX files
+*.pdf
+*.csv
+*.xlsx
+*.xls
