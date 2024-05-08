@@ -5,9 +5,10 @@ spark = SparkSession.builder \
     .appName("RealEstateAnalysis") \
     .getOrCreate()
 
+# redo dataset
+
 # Load the dataset into a DataFrame
-df = spark.read.csv("C:/Users/Tario/Desktop/UNIC/SM5/COMP-340-1 Big Data/HW6/Real_Estate_Sales_Cleaned.csv", header=True, inferSchema=True)
+df = spark.read.csv("", header=True, inferSchema=True)
 
 # Descriptive statistics
 df.describe().show()
-
