@@ -14,6 +14,12 @@ data_without_location = data[data['Location'].isna()]
 print("Count of rows in dataframe with Location:", len(data_with_location))
 print("Count of rows in dataframe without Location:", len(data_without_location))
 
+# Drop N/A values
+data_with_location = data_with_location.dropna()
+
+# Show row count after dropping N/A values
+print("Count of rows in dataframe with Location after dropping N/A values:", len(data_with_location))
+print("Count of rows in dataframe without Location after dropping N/A values:", len(data_without_location))
 
 # Extract X and Y coordinates from the 'Location' column
 #data['X'] = data['Location'].apply(lambda x: float(x.split(' ')[1][1:]))
