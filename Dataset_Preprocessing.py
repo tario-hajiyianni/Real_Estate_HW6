@@ -31,9 +31,24 @@ print("Count of rows in dataframe without Location after dropping N/A values:", 
 data_with_location['X'] = data_with_location['Location'].apply(lambda x: float(x.split(' ')[1][1:]))
 data_with_location['Y'] = data_with_location['Location'].apply(lambda x: float(x.split(' ')[2][:-1]))
 
-print(data_with_location.head())
 # Town            Address   Location         X         Y
 # Vernon     27 TRACY DRIVE POINT (-72.47857 41.84938) -72.47857  41.84938
-#Actual 41°50'58"N 72°28'42"W
+#Actual (Approx.) 41°50'58"N 72°28'42"W
+
+# Convert 'X' to Longitude
+data_with_location['Longitude'] = data_with_location['X'].apply(lambda x: f"{abs(x):.5f} {'E' if x >= 0 else 'W'}")
+
+# Convert 'Y' to Latitude
+data_with_location['Latitude'] = data_with_location['Y'].apply(lambda y: f"{abs(y):.5f} {'N' if y >= 0 else 'S'}")
+
+# Drop the 'X' and 'Y' columns
+data_with_location.drop(['X', 'Y'], axis=1, inplace=True)
+
+# Town            Address   Location                    Longitude    Latitude
+#Vernon     27 TRACY DRIVE  POINT (-72.47857 41.84938)  72.47857 W  41.84938 N  
+
+# Print the dataframe with longitude and latitude
+print(data_with_location.head())
+
 
 #data.to_csv("", index=False)
