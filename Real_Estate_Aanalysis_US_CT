@@ -1,37 +1,51 @@
+import time
+import pandas as pd
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.regression import LinearRegression
 from pyspark.ml.evaluation import RegressionEvaluator
 import matplotlib.pyplot as plt
 
-# Create a SparkSession
-spark = SparkSession.builder \
-    .appName("RealEstateAnalysis") \
-    .getOrCreate()
+# Function to measure execution time
+def measure_execution_time(func):
+    start_time = time.time()
+    func()
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print("Execution Time:", execution_time, "seconds")
 
-data_with_location = spark.read.csv("Real_Estate_HW6/data_with_location.csv", header=True, inferSchema=True)
-data_without_location = spark.read.csv("Real_Estate_HW6/data_without_location.csv", header=True, inferSchema=True)
+# Function to perform data loading, preprocessing, model training, and evaluation in Spark
+def process_data_spark():
+    spark = SparkSession.builder \
+        .appName("RealEstateAnalysis") \
+        .getOrCreate()
+    
+    data_without_location = spark.read.csv("Real_Estate_HW6/data_without_location.csv", header=True, inferSchema=True)
 
-data_without_location = data_without_location.dropna(subset=["Assessed Value"])
+    # Preprocessing steps...
+    data_without_location = data_without_location.dropna(subset=["Assessed Value", "Sale Amount"])
 
-assembler = VectorAssembler(inputCols=["Assessed Value"], outputCol="features")
-data_without_location = assembler.transform(data_without_location)
-lr = LinearRegression(featuresCol="features", labelCol="Sale Amount", regParam=0.1, elasticNetParam=0.0)
-lr_model = lr.fit(data_without_location)
-print("Coefficients: {}".format(lr_model.coefficients))
-print("Intercept: {}".format(lr_model.intercept))
+    assembler = VectorAssembler(inputCols=["Assessed Value", "Sale Amount", "List Year", "Sales Ratio"], outputCol="features")
+    data_without_location = assembler.transform(data_without_location)
+    
+    # Model training and evaluation steps...
+    lr = LinearRegression(featuresCol="features", labelCol="Sale Amount", regParam=0.1, elasticNetParam=0.0)
+    lr_model = lr.fit(data_without_location)
+    
+    predictions = lr_model.transform(data_without_location)
+    evaluator = RegressionEvaluator(labelCol="Sale Amount", predictionCol="prediction", metricName="rmse")
+    rmse = evaluator.evaluate(predictions)
+    print("Root Mean Squared Error (RMSE):", rmse)
 
-predictions = lr_model.transform(data_without_location)
-evaluator = RegressionEvaluator(labelCol="Sale Amount", predictionCol="prediction", metricName="rmse")
-rmse = evaluator.evaluate(predictions)
-print("Root Mean Squared Error (RMSE):", rmse)
+    actual_predicted = predictions.select("Sale Amount", "prediction").toPandas()
+    plt.scatter(actual_predicted["Sale Amount"], actual_predicted["prediction"])
+    plt.xlabel("Actual Sale Amount")
+    plt.ylabel("Predicted Sale Amount")
+    plt.title("Actual vs. Predicted Sale Amounts")
+    plt.show()
 
-actual_predicted = predictions.select("Sale Amount", "prediction").toPandas()
-plt.scatter(actual_predicted["Sale Amount"], actual_predicted["prediction"])
-plt.xlabel("Actual Sale Amount")
-plt.ylabel("Predicted Sale Amount")
-plt.title("Actual vs. Predicted Sale Amounts")
-plt.show()
+    spark.stop()
 
-spark.stop()
+if __name__ == "__main__":
+    print("Spark Version:")
+    measure_execution_time(process_data_spark)
