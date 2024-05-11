@@ -48,7 +48,11 @@ data_with_location.drop(['X', 'Y'], axis=1, inplace=True)
 #Vernon     27 TRACY DRIVE  POINT (-72.47857 41.84938)  72.47857 W  41.84938 N  
 
 # Print the dataframe with longitude and latitude
-print(data_with_location.head())
+#print(data_with_location.head())
 
 
-#data.to_csv("", index=False)
+# Save the dataframe with location to CSV
+data_with_location.to_csv("data_with_location.csv", index=False)
+
+# Save the dataframe without location to CSV
+data_without_location.to_csv("data_without_location.csv", index=False)
