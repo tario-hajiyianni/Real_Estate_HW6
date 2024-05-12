@@ -13,4 +13,4 @@ Single-threaded Version Analysis (Liner_Regression_Single.py)
 This script performs similar data analysis tasks as the Spark version but without using Spark. It loads the preprocessed data from the CSV file, splits it into training and testing sets, trains a linear regression model, evaluates the model using mean squared error (MSE) and R-squared score, and visualizes the actual vs. predicted sale amounts using matplotlib.
 
 .gitignore File
-The .gitignore file is used to specify intentionally untracked files that Git should ignore. In this project, it is configured to ignore PDF, CSV, XLS, and XLSX files.
+The .gitignore file is used to specify intentionally untracked files that Git should ignore. In this project, it is configured to ignore CSV, XLS, and XLSX files.
