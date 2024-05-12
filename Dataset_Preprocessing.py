@@ -41,14 +41,11 @@ data_with_location['Longitude'] = data_with_location['Longitude(Value)'].apply(l
 # Convert 'Y' to Latitude
 data_with_location['Latitude'] = data_with_location['Latitude(Value)'].apply(lambda y: f"{abs(y):.5f} {'N' if y >= 0 else 'S'}")
 
-
-
 # Town            Address   Location                    Longitude    Latitude
 #Vernon     27 TRACY DRIVE  POINT (-72.47857 41.84938)  72.47857 W  41.84938 N  
 
 # Print the dataframe with longitude and latitude
 #print(data_with_location.head())
-
 
 # Save the dataframe with location to CSV
 data_with_location.to_csv("data_with_location.csv", index=False)

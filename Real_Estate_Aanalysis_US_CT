@@ -8,13 +8,17 @@ import matplotlib.pyplot as plt
 
 # Function to measure execution time
 def measure_execution_time(func):
-    start_time = time.time()
-    func()
-    end_time = time.time()
-    execution_time = end_time - start_time
-    print("Execution Time:", execution_time, "seconds")
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print("Execution Time:", execution_time, "seconds")
+        return result
+    return wrapper
 
 # Function to perform data loading, preprocessing, model training, and evaluation in Spark
+@measure_execution_time
 def process_data_spark():
     spark = SparkSession.builder \
         .appName("RealEstateAnalysis") \
@@ -48,4 +52,4 @@ def process_data_spark():
 
 if __name__ == "__main__":
     print("Spark Version:")
-    measure_execution_time(process_data_spark)
+    process_data_spark()

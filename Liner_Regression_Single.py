@@ -65,4 +65,5 @@ def train_model_single_threaded(data):
 if __name__ == "__main__":
     print("Single-threaded Version:")
     data = process_data_single_threaded()
-    measure_execution_time(train_model_single_threaded(data))
+    measure_execution_time(lambda: train_model_single_threaded(data))
+
